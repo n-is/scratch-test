@@ -1,0 +1,6 @@
+# Ignore goland & vscode folders
+.idea
+.vscode
+
+# Ignore any temp folders
+tmp
