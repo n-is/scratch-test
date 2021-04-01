@@ -26,3 +26,5 @@ docker run -it -p 8080:8080 scratch-app
 curl -X GET http://localhost:8080/?state=florida\&state=ak\&limit=4
 ```
 Returns four max entries that have state florida or alaska.
+
+4. Github Actions have been used as CI tool.
