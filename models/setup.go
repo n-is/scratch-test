@@ -56,6 +56,8 @@ func SetupClinic() (schema.IResolver, error) {
 		states[strings.ToLower(k)] = strings.ToLower(v)
 	}
 
+	// States are equal if names and codes match
+	// Alaska == alaska == ak == AK
 	sch.AddEqualChecker("state", func(v1, v2 interface{}) (bool, error) {
 		// We are sure that all variables are string
 		v1s, _ := v1.(string)

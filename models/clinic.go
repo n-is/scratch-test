@@ -10,6 +10,7 @@ type available struct {
 	To   string `json:"to"`
 }
 
+// Clinic represents either a dental-clinic or vet-clinic
 type Clinic struct {
 	Name         string     `json:"name"`
 	State        string     `json:"stateName"`
@@ -34,6 +35,7 @@ func (c *Clinic) Init() {
 	}
 }
 
+// Implement schema.IData so that the database knows where to look.
 func (c Clinic) Get(s string) interface{} {
 	switch s {
 	case "name":

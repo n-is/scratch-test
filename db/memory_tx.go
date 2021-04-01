@@ -10,11 +10,13 @@ var (
 	ErrNoEntry = errors.New("no entry")
 )
 
+// MemoryTx handles the transaction for in-memory database
 type MemoryTx struct {
 	db       *MemoryDB
 	writable bool
 }
 
+// Insert is just amortized constant time (for fixed schema)
 func (tx *MemoryTx) Insert(d schema.IData) {
 	cols := tx.db.resolver.Columns()
 	for _, c := range cols {
@@ -23,6 +25,9 @@ func (tx *MemoryTx) Insert(d schema.IData) {
 	}
 }
 
+// TODO:
+// Implement efficient Read. This has O(n) complexity, which is very very bad.
+// Indexing is probably the best way.
 func (tx *MemoryTx) Read(condition map[string][]interface{}, limit int) ([]map[string]interface{}, error) {
 	var data []map[string]interface{}
 

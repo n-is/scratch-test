@@ -8,14 +8,11 @@ import (
 
 // Currently on equals filter is supported
 
+// MemoryDB is the in-memory custom database implementation.
 type MemoryDB struct {
 	resolver schema.IResolver
 	mu       sync.RWMutex
 	data     map[string][]interface{}
-}
-
-func (m *MemoryDB) Close() error {
-	return nil
 }
 
 func (m *MemoryDB) Init(resolver schema.IResolver) error {
@@ -42,26 +39,6 @@ func (m *MemoryDB) Read(condition map[string][]interface{}, limit int) ([]map[st
 	return results, err
 }
 
-func (m *MemoryDB) begin(writable bool) (ITx, error) {
-	tx := &MemoryTx{
-		db:       m,
-		writable: writable,
-	}
-	tx.lock()
-
-	return tx, nil
-}
-
-func (m *MemoryDB) managed(writable bool, fn func(tx ITx) error) error {
-	tx, err := m.begin(writable)
-	if err != nil {
-		return err
-	}
-	defer tx.unlock()
-
-	return fn(tx)
-}
-
 func (m *MemoryDB) View(fn func(tx ITx) error) error {
 	return m.managed(false, fn)
 }
@@ -70,8 +47,8 @@ func (m *MemoryDB) Update(fn func(tx ITx) error) error {
 	return m.managed(true, fn)
 }
 
-func CreateMemoryDB() *MemoryDB {
-	return &MemoryDB{data: make(map[string][]interface{})}
+func (m *MemoryDB) Close() error {
+	return nil
 }
 
 func (m *MemoryDB) String() string {
@@ -96,4 +73,28 @@ func (m *MemoryDB) String() string {
 	}
 
 	return string(bts)
+}
+
+func (m *MemoryDB) begin(writable bool) (ITx, error) {
+	tx := &MemoryTx{
+		db:       m,
+		writable: writable,
+	}
+	tx.lock()
+
+	return tx, nil
+}
+
+func (m *MemoryDB) managed(writable bool, fn func(tx ITx) error) error {
+	tx, err := m.begin(writable)
+	if err != nil {
+		return err
+	}
+	defer tx.unlock()
+
+	return fn(tx)
+}
+
+func CreateMemoryDB() *MemoryDB {
+	return &MemoryDB{data: make(map[string][]interface{})}
 }
