@@ -13,7 +13,6 @@ A simple api endpoint with custom in-memory database implementation.
    server up and running.
     
 2. A docker image can be built and run from the Dockerfile.
-   a
    ```bash
    # Build the app image
    docker build -t scratch-app .
