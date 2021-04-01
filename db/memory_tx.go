@@ -48,6 +48,11 @@ func (tx *MemoryTx) Read(condition map[string][]interface{}, limit int) ([]map[s
 		}
 	}
 
+	// No need to check if no conditions are available
+	if len(condition) == 0 {
+		return data, nil
+	}
+
 	for i := range tx.db.data[cols[0]] {
 
 		if limit > 0 && len(data) >= limit {
